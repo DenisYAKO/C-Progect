@@ -1,0 +1,62 @@
+#include <cstdio>
+#include <cstring>
+
+void appendToFile(const char* filename)
+{
+    FILE* file = std::fopen(filename, "a");
+    
+    if (file == nullptr)
+    {
+        std::perror("Ошибка открытия файла для записи");
+        return;
+    }
+
+    char input[100];
+    std::cout << "Введите текст для добавления в файл (введите 'exit' для выхода):\n";
+    
+    while (true)
+    {
+        std::cout << "> ";
+        std::cin.getline(input, sizeof(input));
+
+        if (std::strcmp(input, "exit") == 0)
+        {
+            break;
+        }
+
+        std::fprintf(file, "%s\n", input);
+    }
+
+    std::fclose(file);
+}
+
+void readFromFile(const char* filename)
+{
+    FILE* file = std::fopen(filename, "r");
+    
+    if (file == nullptr)
+    {
+        std::perror("Ошибка открытия файла для чтения");
+        return;
+    }
+
+    char buffer[100];
+    std::cout << "Содержимое файла:\n";
+    while (std::fgets(buffer, sizeof(buffer), file) != nullptr)
+    {
+        std::printf("%s", buffer);
+    }
+
+    std::fclose(file);
+}
+
+int main() 
+{
+    const char* filename = "example.txt";
+
+    appendToFile(filename);
+
+    readFromFile(filename);
+
+    return 0;
+}
