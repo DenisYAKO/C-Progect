@@ -1,0 +1,119 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Figurs
+{
+private:
+	std::string name;
+
+public:
+	Figurs(const std::string& n) : name(n) {}
+	const std::string& GetName() const
+	{
+		return name;
+	}
+
+	virtual double area() const
+	{
+		return 0;
+	}
+
+	void print() const
+	{
+		cout << "Figure: " << name << ", Area: " << area() << endl;
+	}
+};
+
+class Qadrat : public Figurs
+{
+private:
+	double side;
+
+public:
+	Qadrat(double s) : Figurs("Qadrat"), side(s) {}
+
+	double area() const
+	{
+		return side * side;
+	}
+};
+
+class Paralellogram : public Figurs
+{
+private:
+	double side;
+	double height;
+
+public:
+	Paralellogram(double s, double h) : Figurs("Parallelogram"), side(s), height(h) {}
+
+	double area() const
+	{
+		return side * height;
+	}
+};
+
+class Pramougolnik : public Figurs
+{
+private:
+	double width;
+	double height;
+
+public:
+	Pramougolnik(double a, double b) : Figurs("Pramougolnik"), width(a), height(b) {}
+
+	double area() const
+	{
+		return width * height;
+	}
+};
+
+class Krug : public Figurs
+{
+private:
+	double radius;
+	const double pi = 3.14;
+
+public:
+	Krug(double r) : Figurs("Krug"), radius(r) {}
+
+	double area() const
+	{
+		return pi * (radius * radius);
+	}
+};
+
+class Triangle : public Figurs
+{
+private:
+	double base;
+	double height;
+
+public:
+	Triangle(double b, double h) : Figurs("Triangle"), base(b), height(h) {}
+
+	double area() const
+	{
+		return 0.5 * base * height;
+	}
+};
+
+int main()
+{
+	const int numFigures = 5;
+	Figurs* figures[numFigures];
+
+	figures[0] = new Qadrat(5);
+	figures[1] = new Paralellogram(4, 3);
+	figures[2] = new Pramougolnik(4, 5);
+	figures[3] = new Krug(3);
+	figures[4] = new Triangle(6, 4);
+
+	for (int i = 0; i < numFigures; i++)
+	{
+		figures[i]->print();
+	}
+	return 0;
+}
