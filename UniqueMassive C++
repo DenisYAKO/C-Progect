@@ -1,0 +1,46 @@
+#include <cstdio>
+#include <ctime>
+#include <set>
+
+bool isUnique(int arr[], int size, int number)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (arr[i] == number)
+        {
+            return false;
+        }
+    }
+    return true; 
+}
+
+int main()
+{
+    const int SIZE = 10;
+    int a[SIZE];
+    int number;
+    int i = 0;
+
+    while (i < SIZE)
+    {
+        printf("Введите число %d: ", i + 1);
+        scanf("%d", &number);
+
+        if (!isUnique(a, i, number))
+        {
+            printf("Число %d уже имеется в массиве. Попробуйте снова.\n", number);
+        } 
+        else
+        {
+            a[i] = number; 
+            i ++;
+        }
+    }
+    printf("Уникальные числа массива: ");
+    for (int j = 0; j < SIZE; j++)
+    {
+        printf("%d ", a[j]);
+    }
+    printf("\n");
+    return 0;
+}
