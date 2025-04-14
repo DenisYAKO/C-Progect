@@ -1,0 +1,104 @@
+#include <iostream>
+#include <cstdio>
+#include <cstdint>
+#include <algorithm>
+
+#pragma pack(push, 1)
+struct BMPHeader  
+{ 
+    uint16_t fileType;  
+    uint32_t fileSize;   
+    uint16_t reserved1;    
+    uint16_t reserved2;  
+    uint32_t offsetData;  
+}; 
+
+struct BMPInfoHeader 
+{ 
+    uint32_t size;     
+    int32_t width;       
+    int32_t height;     
+    uint16_t planes;     
+    uint16_t bitCount;     
+    uint32_t compression;   
+    uint32_t sizeImage;    
+    int32_t xPixelsPerMeter;  
+    int32_t yPixelsPerMeter;  
+    uint32_t colorsUsed;   
+    uint32_t colorsImportant; 
+}; 
+#pragma pack(pop)
+
+void printImage(int width, int height, uint8_t image[30][30]) 
+{ 
+    for (int y = 0; y < height; ++y) 
+    { 
+        for (int x = 0; x < width; ++x) 
+        { 
+            char symbol = ' '; 
+            if (image[y][x] < 64) symbol = ' ';
+            else if (image[y][x] < 128) symbol = '.'; 
+            else if (image[y][x] < 192) symbol = '*'; 
+            else symbol = '#'; 
+            
+            std::cout << symbol; 
+        } 
+        std::cout << '\n'; 
+    } 
+} 
+
+int main() 
+{ 
+    const char* filename = "Krik2.bmp"; 
+    FILE* file = std::fopen(filename, "rb"); 
+
+    if (!file) 
+    { 
+        std::cout << "Не удалось открыть файл!" << std::endl; 
+        return 1; 
+    } 
+
+    BMPHeader bmpHeader; 
+    BMPInfoHeader bmpInfoHeader; 
+
+    std::fread(&bmpHeader, sizeof(bmpHeader), 1, file); 
+    std::fread(&bmpInfoHeader, sizeof(bmpInfoHeader), 1, file); 
+
+    if (bmpHeader.fileType != 0x4D42) 
+    { 
+        std::cout << "Это не BMP файл!" << std::endl; 
+        std::fclose(file); 
+        return 1; 
+    } 
+
+    if (bmpInfoHeader.bitCount != 24) 
+    {
+        std::cout << "Поддерживаются только 24-битные BMP файлы!" << std::endl;
+        std::fclose(file);
+        return 1;
+    }
+
+    int width = std::min(bmpInfoHeader.width, 30); 
+    int height = std::min(bmpInfoHeader.height, 30); 
+
+    std::fseek(file, bmpHeader.offsetData, SEEK_SET); 
+
+    uint8_t image[30][30];  
+    for (int y = height - 1; y >= 0; --y) 
+    { 
+        for (int x = 0; x < width; ++x) 
+        { 
+            uint8_t pixel[3]; 
+            std::fread(pixel, sizeof(pixel), 1, file); 
+
+            image[y][x] = static_cast<uint8_t>((0.299 * pixel[2] + 0.587 * pixel[1] + 0.114 * pixel[0])); 
+        } 
+        
+        std::fseek(file, (4 - (width * 3) % 4) % 4, SEEK_CUR); 
+    } 
+
+    printImage(width, height, image); 
+
+    std::fclose(file); 
+    return 0; 
+}
