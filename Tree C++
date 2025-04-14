@@ -1,0 +1,73 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+struct Tree
+{
+	int a;
+	Tree *left;
+	Tree *right;
+
+	Tree(int value) : a(value), left(nullptr), right(nullptr) {}
+};
+
+Tree* insert(Tree* root, int value)
+{
+	if (root == nullptr)
+	{
+		return new Tree(value);
+	}
+	if (value < root->a)
+	{
+		root->left = insert(root->left, value);
+	}
+	else if (value > root->a)
+	{
+		root->right = insert(root->right, value);
+	}
+	return root;
+}
+
+void inorderTreeTravel(Tree* root)
+{
+	if (root != nullptr)
+	{
+		inorderTreeTravel(root->left);
+		printf("%d ", root->a);
+		inorderTreeTravel(root->right);
+	}
+}
+
+void freeTree(Tree* root)
+{
+	if (root != nullptr)
+	{
+		freeTree(root->left);
+		freeTree(root->right);
+		delete root;
+	}
+}
+
+int main()
+{
+	std::srand(std::time(0));
+	Tree* root = nullptr;
+	const int arraySize = 10;
+	int randomNumbers[arraySize];
+
+	printf("Сгенерированные случайные числа: ");
+	for (int i = 0; i < arraySize; ++i)
+	{
+		int randomValue = std::rand() % 100;
+		randomNumbers[i] = randomValue;
+		root = insert(root, randomValue);
+		printf("%d ", randomValue);
+	}
+	printf("\n");
+	printf("Последовательный обход дерева: ");
+	inorderTreeTravel(root);
+	printf("\n");
+
+	freeTree(root);
+	return 0;
+}
