@@ -1,0 +1,133 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+
+struct Tree
+{
+ int key;
+ Tree* left = nullptr;
+ Tree* right = nullptr;
+ int height;
+
+ Tree(int value) : key(value), height(1) {}
+};
+
+int getHeight(Tree* node)
+{
+ return node ? node->height : 0;
+}
+
+int getBalance(Tree* node)
+{
+ return node ? getHeight(node->left) - getHeight(node->right) : 0;
+}
+
+void updateHeight(Tree* node)
+{
+ node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
+}
+
+Tree* rightRotate(Tree* y) 
+{
+ Tree* x = y->left;
+ y->left = x->right;
+ x->right = y;
+ updateHeight(y);
+ updateHeight(x);
+ return x;
+}
+
+Tree* leftRotate(Tree* x)
+{
+ Tree* y = x->right;
+ x->right = y->left;
+ y->left = x;
+ updateHeight(x);
+ updateHeight(y);
+ return y;
+}
+
+Tree* insert(Tree* node, int key)
+{
+ if (!node) return new Tree(key);
+
+ if (key < node->key)
+ {
+  node->left = insert(node->left, key);
+ }
+ else if (key > node->key)
+ {
+  node->right = insert(node->right, key);
+ }
+ else
+ {
+  return node;
+ }
+
+ updateHeight(node);
+ int balance = getBalance(node);
+
+ if (balance > 1 && key < node->left->key) return rightRotate(node);
+ if (balance < -1 && key > node->right->key) return leftRotate(node);
+ if (balance > 1 && key > node->left->key)
+ {
+  node->left = leftRotate(node->left);
+  return rightRotate(node);
+ }
+ if (balance < -1 && key < node->right->key)
+ {
+  node->right = rightRotate(node->right);
+  return leftRotate(node);
+ }
+
+ return node;
+}
+
+void inorder(Tree* root)
+{
+ if (root) {
+  inorder(root->left);
+  printf("%d ", root->key);
+  inorder(root->right);
+ }
+}
+
+void freeTree(Tree* node)
+{
+ if (node)
+ {
+  freeTree(node->left);
+  freeTree(node->right);
+  delete node;
+ }
+}
+
+int main()
+{
+ const int arraySize = 10;
+ int randomNumbers[arraySize];
+
+ std::srand(std::time(0));
+ printf("Random numbers is massive: ");
+ for (int i = 0; i < arraySize; ++i)
+ {
+  randomNumbers[i] = std::rand() % 100; 
+  printf("%d ", randomNumbers[i]);
+ }
+ printf("\n");
+
+ Tree* root = nullptr;
+
+ for (int i = 0; i < arraySize; ++i)
+ {
+  root = insert(root, randomNumbers[i]);
+ }
+
+ printf("Tree Travel AVL: ");
+ inorder(root);
+ printf("\n");
+
+ freeTree(root);
+ return 0;
+}
