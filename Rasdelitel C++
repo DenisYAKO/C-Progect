@@ -1,0 +1,66 @@
+#include <cstdio>
+#include <cstdlib> 
+
+class Splitter 
+{
+public:
+    void split(const char* str, char delimiter)
+    {
+        const char* start = str;
+        const char* end = str;
+
+        while (*end != '\0') 
+        {
+            while (*end != delimiter && *end != '\0')
+            {
+                ++end;
+            }
+
+            for (const char* ptr = start; ptr < end; ++ptr)
+            {
+                putchar(*ptr);
+            }
+            putchar('\n');
+
+            if (*end != '\0')
+            {
+                ++end; 
+            }
+
+            start = end; 
+        }
+    }
+
+    void inputAndSplit()
+    {
+        size_t maxLength = 256; 
+        char* input = (char*)malloc(maxLength * sizeof(char)); 
+        if (input == nullptr) 
+        {
+            printf("Ошибка выделения памяти.\n");
+            return;
+        }
+
+        char delimiter;
+
+        printf("Введите строку (максимум 255 символов): ");
+        scanf("%255[^\n]", input);
+        getchar(); 
+
+        printf("Введите разделитель: ");
+        scanf("%c", &delimiter);
+
+        printf("Разделенные строки:\n");
+        split(input, delimiter);
+
+        free(input);
+    }
+};
+
+int main()
+{
+    Splitter splitter; 
+    splitter.inputAndSplit(); 
+
+    return 0;
+}
