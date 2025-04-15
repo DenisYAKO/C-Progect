@@ -1,0 +1,57 @@
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+
+struct point
+{
+    double x;
+    double y;
+};
+
+double distance(const point& p1, const point& p2)
+{
+    return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+}
+
+double triangleArea(const point& A, const point& B, const point& C)
+{
+    double a = distance(B, C);
+    double b = distance(A, C);
+    double c = distance(A, B);
+    
+    if (a + b > c && a + c > b && b + c > a)
+    {
+        double s = (a + b + c) / 2;
+        return sqrt(s * (s - a) * (s - b) * (s - c));
+    } 
+    else 
+    {
+        return -1; 
+    }
+}
+
+int main()
+{
+    point A, B, C; 
+    double area;   
+
+    printf("Введите координаты точки A (x y): ");
+    scanf("%lf %lf", &A.x, &A.y);
+    
+    printf("Введите координаты точки B (x y): ");
+    scanf("%lf %lf", &B.x, &B.y);
+    
+    printf("Введите координаты точки C (x y): ");
+    scanf("%lf %lf", &C.x, &C.y);
+    
+    area = triangleArea(A, B, C);
+    
+    if (area >= 0)
+    {
+        printf("Площадь треугольника ABC: %.2lf\n", area);
+    } else {
+        printf("Треугольник с такими сторонами не существует.\n");
+    }
+    
+    return 0;
+}
