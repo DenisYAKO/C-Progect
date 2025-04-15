@@ -1,0 +1,71 @@
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+
+void addMatrices(int* a, int* b, int* result, int rows, int cols)
+{
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            int offset = i * cols + j;
+            *(result + offset) = *(a + offset) + *(b + offset); 
+        }
+    }
+}
+
+void printMatrix(int* matrix, int rows, int cols)
+{
+    for (int i = 0; i < rows; i++) 
+    {
+        for (int j = 0; j < cols; j++) 
+        {
+            int offset = i * cols + j;
+            printf("%d ", *(matrix + offset)); 
+        }
+        printf("\n");
+    }
+}
+
+void fillMatrixWithRandomNumbers(int* matrix, int rows, int cols)
+{
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++) 
+        {
+            int offset = i * cols + j;
+            *(matrix + offset) = rand() % 10; 
+        }
+    }
+}
+
+int main() {
+    const int rows = 3;
+    const int cols = 3;
+
+    srand(static_cast<unsigned int>(time(0)));
+
+    int* matrixA = new int[rows * cols];
+    int* matrixB = new int[rows * cols];
+    int* result = new int[rows * cols];
+
+    fillMatrixWithRandomNumbers(matrixA, rows, cols);
+    fillMatrixWithRandomNumbers(matrixB, rows, cols);
+
+    addMatrices(matrixA, matrixB, result, rows, cols);
+
+    printf("Matrix A:\n");
+    printMatrix(matrixA, rows, cols);
+
+    printf("\nMatrix B:\n");
+    printMatrix(matrixB, rows, cols);
+
+    printf("\nResult sum matrix:\n");
+    printMatrix(result, rows, cols);
+
+    delete[] matrixA;
+    delete[] matrixB;
+    delete[] result;
+
+    return 0;
+}
